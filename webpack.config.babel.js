@@ -35,7 +35,7 @@ const webpackConfig = {
 const webpackHotPath = `${config.compiler_public_path}__webpack_hmr`
 const webpackHotMiddlewareEntry = `webpack-hot-middleware/client?${_.map({
   path: webpackHotPath,   // The path which the middleware is serving the event stream on
-  timeout: 2000,          // The time to wait after a disconnection before attempting to reconnect
+  timeout: 2000,          // The time to wait after a disconnection before attempting to recocontentBasennect
   overlay: true,          // Set to false to disable the DOM-based client-side overlay.
   reload: true,           // Set to true to auto-reload the page when webpack gets stuck.
   noInfo: false,          // Set to true to disable informational console logging.
@@ -75,7 +75,7 @@ webpackConfig.output = {
 // ------------------------------------
 webpackConfig.plugins = [...webpackConfig.plugins,
   new webpack.DefinePlugin(config.compiler_globals),
-  new webpack.DllReferencePlugin({
+  new webpack.DllReferencePlugin({f
     context: paths.base('node_modules'),
     manifest: require(paths.base('dll/vendor-manifest.json')),
   }),

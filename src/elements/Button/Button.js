@@ -5,6 +5,7 @@ import React, { Component } from 'react'
 
 import {
   childrenUtils,
+  createComponent,
   customPropTypes,
   createShorthandFactory,
   getElementType,
@@ -21,6 +22,18 @@ import ButtonContent from './ButtonContent'
 import ButtonGroup from './ButtonGroup'
 import ButtonOr from './ButtonOr'
 
+const rules = {
+  root: state => ({
+    className: 'UIButton',
+    border: '2px solid salmon',
+  }),
+
+  button: state => ({
+    className: 'UIButton__button',
+    border: '2px solid cornflowerblue',
+  }),
+}
+
 /**
  * A Button indicates a possible user action.
  * @see Form
@@ -29,6 +42,9 @@ import ButtonOr from './ButtonOr'
  */
 class Button extends Component {
   static propTypes = {
+    styles: PropTypes.object.isRequired,
+    rules: PropTypes.object.isRequired,
+
     /** An element type to render as (string or function). */
     as: customPropTypes.as,
 
@@ -223,52 +239,53 @@ class Button extends Component {
       primary,
       secondary,
       size,
+      styles,
       toggle,
     } = this.props
 
-    const baseClasses = cx(
-      color,
-      size,
-      useKeyOnly(active, 'active'),
-      useKeyOnly(basic, 'basic'),
-      useKeyOnly(circular, 'circular'),
-      useKeyOnly(compact, 'compact'),
-      useKeyOnly(fluid, 'fluid'),
-      useKeyOnly(this.hasIconClass(), 'icon'),
-      useKeyOnly(inverted, 'inverted'),
-      useKeyOnly(loading, 'loading'),
-      useKeyOnly(negative, 'negative'),
-      useKeyOnly(positive, 'positive'),
-      useKeyOnly(primary, 'primary'),
-      useKeyOnly(secondary, 'secondary'),
-      useKeyOnly(toggle, 'toggle'),
-      useKeyOrValueAndKey(animated, 'animated'),
-      useKeyOrValueAndKey(attached, 'attached'),
-    )
-    const labeledClasses = cx(
-      useKeyOrValueAndKey(labelPosition || !!label, 'labeled'),
-    )
-    const wrapperClasses = cx(
-      useKeyOnly(disabled, 'disabled'),
-      useValueAndKey(floated, 'floated'),
-    )
+    // const baseClasses = cx(
+    //   color,
+    //   size,
+    //   useKeyOnly(active, 'active'),
+    //   useKeyOnly(basic, 'basic'),
+    //   useKeyOnly(circular, 'circular'),
+    //   useKeyOnly(compact, 'compact'),
+    //   useKeyOnly(fluid, 'fluid'),
+    //   useKeyOnly(this.hasIconClass(), 'icon'),
+    //   useKeyOnly(inverted, 'inverted'),
+    //   useKeyOnly(loading, 'loading'),
+    //   useKeyOnly(negative, 'negative'),
+    //   useKeyOnly(positive, 'positive'),
+    //   useKeyOnly(primary, 'primary'),
+    //   useKeyOnly(secondary, 'secondary'),
+    //   useKeyOnly(toggle, 'toggle'),
+    //   useKeyOrValueAndKey(animated, 'animated'),
+    //   useKeyOrValueAndKey(attached, 'attached'),
+    // )
+    // const labeledClasses = cx(
+    //   useKeyOrValueAndKey(labelPosition || !!label, 'labeled'),
+    // )
+    // const wrapperClasses = cx(
+    //   useKeyOnly(disabled, 'disabled'),
+    //   useValueAndKey(floated, 'floated'),
+    // )
 
     const rest = getUnhandledProps(Button, this.props)
     const ElementType = getElementType(Button, this.props, this.computeElementType)
     const tabIndex = this.computeTabIndex(ElementType)
 
     if (!_.isNil(label)) {
-      const buttonClasses = cx('ui', baseClasses, 'button', className)
-      const containerClasses = cx('ui', labeledClasses, 'button', className, wrapperClasses)
+      // const buttonClasses = cx('ui', baseClasses, 'button', className)
+      // const containerClasses = cx('ui', labeledClasses, 'button', className, wrapperClasses)
       const labelElement = Label.create(label, { defaultProps: {
         basic: true,
         pointing: labelPosition === 'left' ? 'right' : 'left',
       } })
 
       return (
-        <ElementType {...rest} className={containerClasses} onClick={this.handleClick}>
+        <ElementType {...rest} className={styles.root} onClick={this.handleClick}>
           {labelPosition === 'left' && labelElement}
-          <button className={buttonClasses} disabled={disabled} ref={this.handleRef} tabIndex={tabIndex}>
+          <button className={styles.button} disabled={disabled} ref={this.handleRef} tabIndex={tabIndex}>
             {Icon.create(icon)} {content}
           </button>
           {(labelPosition === 'right' || !labelPosition) && labelElement}
@@ -276,13 +293,13 @@ class Button extends Component {
       )
     }
 
-    const classes = cx('ui', baseClasses, wrapperClasses, labeledClasses, 'button', className)
+    // const classes = cx('ui', baseClasses, wrapperClasses, labeledClasses, 'button', className)
     const hasChildren = !childrenUtils.isNil(children)
 
     return (
       <ElementType
         {...rest}
-        className={classes}
+        className={styles.root}
         disabled={(disabled && ElementType === 'button') || undefined}
         onClick={this.handleClick}
         ref={this.handleRef}
@@ -299,4 +316,4 @@ class Button extends Component {
 
 Button.create = createShorthandFactory(Button, value => ({ content: value }))
 
-export default Button
+export default createComponent({ component: Button, rules })
